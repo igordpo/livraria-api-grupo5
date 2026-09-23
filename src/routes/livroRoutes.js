@@ -11,5 +11,6 @@ const router = express.Router();
 router.get("/", livroController.listar);
 
 router.get("/:indice", livroController.buscarPorIndice);
+router.post("/", livroController.criar);
 module.exports = router;
 

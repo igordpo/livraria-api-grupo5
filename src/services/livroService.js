@@ -13,4 +13,15 @@ function listarLivros() {
 function buscarLivroPorIndice(indice) {
     return livros[indice];
 }
-module.exports = { listarLivros, buscarLivroPorIndice };
+function criarLivro(dados) {
+    const novoLivro = new Livro(
+        dados.titulo,
+        dados.autor,
+        dados.preco,
+        dados,estoque
+    );
+    livros.push(novoLivro);
+    return novoLivro;
+}
+
+module.exports = { listarLivros, buscarLivroPorIndice, criarLivro };
