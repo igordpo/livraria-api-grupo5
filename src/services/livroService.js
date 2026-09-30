@@ -3,15 +3,31 @@
 // Implementacao chega no Bloco 3.
 
 const Livro = require("../models/Livro");
+
 const livros = [
   new Livro("Clean Code", "Robert C. Martin", 89.9, 12),
   new Livro("Eloquent JavaScript", "Marijn Haverbeke", 45.0, 20),
 ];
-function listarLivros() {
+
+function listarTodos() {
   return livros;
 }
 function buscarLivroPorIndice(indice) {
   return livros[indice];
+}
+function listarLivros(filtros) {
+  let resultado = livros;
+  if (filtros.autor) {
+    resultado = resultado.filter((livro) =>
+      livro.autor.toLowerCase().includes(filtros.autor.toLowerCase()),
+    );
+  }
+  if (filtros.precoMax) {
+  resultado = resultado.filter(
+    (livro) => livro.preco <= Number(filtros.precoMax),
+  );
+}
+  return resultado;
 }
 function criarLivro(dados) {
   const novoLivro = new Livro(
@@ -30,7 +46,8 @@ function atualizarLivroCompleto(indice, dados) {
 
   livros[indice].titulo = dados.titulo;
   livros[indice].autor = dados.autor;
-  livros[indice].preco = dados.preco;
+  livros[indice].preco = dados.
+  preco;
   livros[indice].estoque = dados.estoque;
   livros[indice].categoria = dados.categoria;
 
@@ -57,6 +74,7 @@ function deletarLivro(indice) {
 }
 
 module.exports = {
+  listarTodos,
   listarLivros,
   buscarLivroPorIndice,
   criarLivro,
