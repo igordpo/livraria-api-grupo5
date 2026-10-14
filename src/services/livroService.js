@@ -1,32 +1,56 @@
-// SERVICE = o cozinheiro.
-// Aqui vai ficar a logica de verdade: buscar, calcular, validar.
-// Implementacao chega no Bloco 3.
-
 const Livro = require("../models/Livro");
+
 const livros = [
   new Livro("Clean Code", "Robert C. Martin", 89.9, 12),
   new Livro("Eloquent JavaScript", "Marijn Haverbeke", 45.0, 20),
+  new Livro("O Senhor dos Aneis", "Tolkien", 129.9, 662),
 ];
-function listarLivros() {
+
+function listarTodos() {
   return livros;
 }
+
 function buscarLivroPorIndice(indice) {
   return livros[indice];
 }
+
+function listarLivros(filtros) {
+  let resultado = livros;
+
+  if (filtros.autor) {
+    resultado = resultado.filter((livro) =>
+      livro.autor.toLowerCase().includes(filtros.autor.toLowerCase()),
+    );
+  }
+  
+  if (filtros.precoMax) {
+    resultado = resultado.filter(
+      (livro) => livro.preco <= Number(filtros.precoMax),
+    );
+  }
+
+  if (filtros.titulo) {
+    resultado = resultado.filter((livro) =>
+      livro.titulo.toLowerCase().includes(filtros.titulo.toLowerCase())
+    );
+  }
+
+  return resultado;
+}
+
 function criarLivro(dados) {
   const novoLivro = new Livro(
     dados.titulo,
     dados.autor,
     dados.preco,
-    dados,
-    estoque,
+    dados.estoque,
   );
   livros.push(novoLivro);
   return novoLivro;
 }
 
 function atualizarLivroCompleto(indice, dados) {
-  if (!livros[indice]) return null;
+  if (!livros[indice] || !dados) return null;
 
   livros[indice].titulo = dados.titulo;
   livros[indice].autor = dados.autor;
@@ -38,7 +62,7 @@ function atualizarLivroCompleto(indice, dados) {
 }
 
 function atualizarLivroParcial(indice, dados) {
-  if (!livros[indice]) return null;
+  if (!livros[indice] || !dados) return null;
 
   if (dados.titulo !== undefined) livros[indice].titulo = dados.titulo;
   if (dados.autor !== undefined) livros[indice].autor = dados.autor;
@@ -57,6 +81,7 @@ function deletarLivro(indice) {
 }
 
 module.exports = {
+  listarTodos,
   listarLivros,
   buscarLivroPorIndice,
   criarLivro,

@@ -8,9 +8,7 @@ const router = express.Router();
 
 router.get("/", livroController.listar);
 router.post("/", livroController.criar);
-router.post("/", livroController.criar);
 router.get("/:indice", livroController.buscarPorIndice);
-
 router.put("/:indice", livroController.atualizarCompleto);
 router.patch("/:indice", livroController.atualizarParcial);
 router.delete("/:indice", livroController.deletar);
