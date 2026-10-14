@@ -16,12 +16,15 @@ function buscarLivroPorIndice(indice) {
 
 function listarLivros(filtros) {
   let resultado = livros;
-
+}
+function listarLivros(filtros) {
+  let resultado = livros;
   if (filtros.autor) {
     resultado = resultado.filter((livro) =>
       livro.autor.toLowerCase().includes(filtros.autor.toLowerCase()),
     );
   }
+
   
   if (filtros.precoMax) {
     resultado = resultado.filter(
@@ -37,6 +40,14 @@ function listarLivros(filtros) {
 
   return resultado;
 }
+
+  if (filtros.precoMax) {
+  resultado = resultado.filter(
+    (livro) => livro.preco <= Number(filtros.precoMax),
+  );
+}
+  return resultado;
+
 
 function criarLivro(dados) {
   const novoLivro = new Livro(
@@ -54,7 +65,8 @@ function atualizarLivroCompleto(indice, dados) {
 
   livros[indice].titulo = dados.titulo;
   livros[indice].autor = dados.autor;
-  livros[indice].preco = dados.preco;
+  livros[indice].preco = dados.
+  preco;
   livros[indice].estoque = dados.estoque;
   livros[indice].categoria = dados.categoria;
 
@@ -88,4 +100,4 @@ module.exports = {
   atualizarLivroCompleto,
   atualizarLivroParcial,
   deletarLivro,
-};
+}

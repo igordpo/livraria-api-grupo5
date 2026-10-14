@@ -7,8 +7,13 @@ const livroService = require("../services/livroService");
 
 function listar(req, res) {
   const filtros = req.query;
+<<<<<<< HEAD
   const livrosFiltrados = livroService.listarLivros(filtros);
   return res.json(livrosFiltrados);
+=======
+  const livros = livroService.listarLivros(filtros);
+  res.status(200).json(livros);
+>>>>>>> 519bcca35b948d8b3fd626ed85fc63ab4eee82b9
 }
 
 function buscarPorIndice(req, res) {
