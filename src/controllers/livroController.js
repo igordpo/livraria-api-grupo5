@@ -7,18 +7,15 @@ const livroService = require("../services/livroService");
 
 function listar(req, res) {
   const filtros = req.query;
-<<<<<<< HEAD
   const livrosFiltrados = livroService.listarLivros(filtros);
   return res.json(livrosFiltrados);
-=======
   const livros = livroService.listarLivros(filtros);
   res.status(200).json(livros);
->>>>>>> 519bcca35b948d8b3fd626ed85fc63ab4eee82b9
 }
 
-function buscarPorIndice(req, res) {
-  const { indice } = req.params;
-  const livro = livroService.buscarLivroPorIndice(indice);
+function buscarPorId(req, res) {
+  const { id } = req.params; 
+  const livro = livroService.buscarLivroPorId(id); 
 
   if (!livro) {
     return res.status(404).json({ erro: "Livro não encontrado" });
@@ -33,10 +30,10 @@ function criar(req, res) {
 }
 
 function atualizarCompleto(req, res) {
-  const { indice } = req.params;
+  const { id } = req.params; 
   const dados = req.body;
 
-  const livroAtualizado = livroService.atualizarLivroCompleto(indice, dados);
+  const livroAtualizado = livroService.atualizarLivroCompleto(id, dados);
 
   if (!livroAtualizado) {
     return res.status(404).json({ erro: "Livro não encontrado" });
@@ -45,10 +42,10 @@ function atualizarCompleto(req, res) {
 }
 
 function atualizarParcial(req, res) {
-  const { indice } = req.params;
+  const { id } = req.params; 
   const dados = req.body;
 
-  const livroAtualizado = livroService.atualizarLivroParcial(indice, dados);
+  const livroAtualizado = livroService.atualizarLivroParcial(id, dados);
 
   if (!livroAtualizado) {
     return res.status(404).json({ erro: "Livro não encontrado" });
@@ -57,8 +54,8 @@ function atualizarParcial(req, res) {
 }
 
 function deletar(req, res) {
-  const { indice } = req.params;
-  const excluído = livroService.deletarLivro(indice);
+  const { id } = req.params; 
+  const excluído = livroService.deletarLivro(id);
 
   if (!excluído) {
     return res.status(404).json({ erro: "Livro não encontrado" });
@@ -68,7 +65,7 @@ function deletar(req, res) {
 
 module.exports = {
   listar,
-  buscarPorIndice,
+  buscarPorId,
   criar,
   atualizarCompleto,
   atualizarParcial,
