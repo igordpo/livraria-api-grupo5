@@ -6,66 +6,76 @@
 const livroService = require("../services/livroService");
 
 function listar(req, res) {
+<<<<<<< HEAD
 const filtros = req.query;
 const livrosFiltrados = livroService.listarLivros(filtros);
 return res.json(livrosFiltrados);
 const livros = livroService.listarLivros(filtros);
 res.status(200).json(livros);
+=======
+  const filtros = req.query;
+  const livrosFiltrados = livroService.listarLivros(filtros);
+  return res.json(livrosFiltrados);
+  const livros = livroService.listarLivros(filtros);
+  res.status(200).json(livros);
+>>>>>>> a77f91c04812d46332db16543c5a189cddb90abf
 }
 
-function buscarPorIndice(req, res) {
-  const indice = req.params.indice;
-  const libro = livroService.buscarLivroPorIndice(indice);
-  if (!libro) {
-    res.status(404).json({ erro: "Livro nao encontrado" });
-    return;
+function buscarPorId(req, res) {
+  const { id } = req.params; 
+  const livro = livroService.buscarLivroPorId(id); 
+
+  if (!livro) {
+    return res.status(404).json({ erro: "Livro não encontrado" });
   }
-  res.json(libro);
+  return res.json(livro);
 }
 
 function criar(req, res) {
-  if (!req.body || Object.keys(req.body).length === 0) {
-     return res.status(400).json({ erro: "Faltou o Content-Type: application/json" });
-  }
-  const novoLivro = livroService.criarLivro(req.body);
-  res.status(201).json(novoLivro);
+  const dados = req.body;
+  const novoLivro = livroService.criarLivro(dados);
+  return res.status(201).json(novoLivro);
 }
 
 function atualizarCompleto(req, res) {
-  const indice = req.params.indice;
-  const livroAtualizado = livroService.atualizarLivroCompleto(indice, req.body);
-  
+  const { id } = req.params; 
+  const dados = req.body;
+
+  const livroAtualizado = livroService.atualizarLivroCompleto(id, dados);
+
   if (!livroAtualizado) {
-    return res.status(404).json({ erro: "Livro nao encontrado" });
+    return res.status(404).json({ erro: "Livro não encontrado" });
   }
-  res.json(livroAtualizado);
+  return res.json(livroAtualizado);
 }
 
 function atualizarParcial(req, res) {
-  const indice = req.params.indice;
-  const livroAtualizado = livroService.atualizarLivroParcial(indice, req.body);
-  
+  const { id } = req.params; 
+  const dados = req.body;
+
+  const livroAtualizado = livroService.atualizarLivroParcial(id, dados);
+
   if (!livroAtualizado) {
-    return res.status(404).json({ erro: "Livro nao encontrado" });
+    return res.status(404).json({ erro: "Livro não encontrado" });
   }
-  res.json(livroAtualizado);
+  return res.json(livroAtualizado);
 }
 
 function deletar(req, res) {
-  const indice = req.params.indice;
-  const sucesso = livroService.deletarLivro(indice);
-  
-  if (!sucesso) {
-    return res.status(404).json({ erro: "Livro nao encontrado" });
+  const { id } = req.params; 
+  const excluído = livroService.deletarLivro(id);
+
+  if (!excluído) {
+    return res.status(404).json({ erro: "Livro não encontrado" });
   }
-  res.status(204).send();
+  return res.status(204).send();
 }
 
-module.exports = { 
-  listar, 
-  buscarPorIndice, 
+module.exports = {
+  listar,
+  buscarPorId,
   criar,
   atualizarCompleto,
   atualizarParcial,
-  deletar
-};
+  deletar,
+}

@@ -6,6 +6,14 @@ let proximoId = 1;
 //   new Livro("Clean Code", "Robert C. Martin", 89.9, 12),
 //   new Livro("Eloquent JavaScript", "Marijn Haverbeke", 45.0, 20),
 // ];
+
+// const livros = [
+//   new Livro("Clean Code", "Robert C. Martin", 89.9, 12),
+//   new Livro("Eloquent JavaScript", "Marijn Haverbeke", 45.0, 20),
+//   new Livro("O Senhor dos Aneis", "Tolkien", 129.9, 662),
+// ];
+
+
 function listarTodos() {
   return livros;
 }
@@ -29,7 +37,35 @@ function listarLivros(filtros) {
     );
   }
   return resultado;
+  return livros.find((livro) => livro.id === Number(id));
 }
+
+function listarLivros(filtros) {
+  let resultado = livros;
+
+  if (!filtros) return resultado;
+
+  if (filtros.autor) {
+    resultado = resultado.filter((livro) =>
+      livro.autor.toLowerCase().includes(filtros.autor.toLowerCase()),
+    );
+  }
+
+  if (filtros.precoMax) {
+    resultado = resultado.filter(
+      (livro) => livro.preco <= Number(filtros.precoMax),
+    );
+  }
+
+  if (filtros.titulo) {
+    resultado = resultado.filter((livro) =>
+      livro.titulo.toLowerCase().includes(filtros.titulo.toLowerCase()),
+    );
+  }
+
+  return resultado;
+}
+
 function criarLivro(dados) {
   const novoLivro = new Livro(
     dados.titulo,
@@ -72,6 +108,35 @@ const livro = buscarLivroPorId(id);
 function deletarLivro(id) {
   const posicao = livros.findIndex((livro) => livro.id === Number (id));
   if (posicao === 1) return false;
+function atualizarLivroCompleto(id, dados) {
+  const livro = buscarLivroPorId(id);
+  if (!livro) return null;
+}
+  livro.titulo = dados.titulo;
+  livro.autor = dados.autor;
+  livro.preco = dados.preco;
+  livro.estoque = dados.estoque;
+  livro.categoria = dados.categoria;
+
+  return livro;
+}
+
+function atualizarLivroParcial(id, dados) {
+  const livro = buscarLivroPorId(id);
+  if (!livro) return null;
+
+  if (dados.titulo !== undefined) livro.titulo = dados.titulo;
+  if (dados.autor !== undefined) livro.autor = dados.autor;
+  if (dados.preco !== undefined) livro.preco = dados.preco;
+  if (dados.estoque !== undefined) livro.estoque = dados.estoque;
+  if (dados.categoria !== undefined) livro.categoria = dados.categoria;
+
+  return livro;
+}
+
+function deletarLivro(id) {
+  const posicao = livros.findIndex((livro) => livro.id === Number(id));
+  if (posicao === -1) return false;
   livros.splice(posicao, 1);
   return true;
 }
@@ -97,4 +162,4 @@ module.exports = {
   atualizarLivroCompleto,
   atualizarLivroParcial,
   deletarLivro,
-};
+}
