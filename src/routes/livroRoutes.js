@@ -13,8 +13,5 @@ router.put("/:id", livroController.atualizarCompleto);
 router.patch("/:id", livroController.atualizarParcial);
 router.delete("/:id", livroController.deletar);
 
-<<<<<<< HEAD
 module.exports = router;
-=======
 module.exports = router;
->>>>>>> 8d8babe35222752ecaa93dc52a80b677e5f48f32
