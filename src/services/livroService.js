@@ -12,8 +12,8 @@ const livros = [
 function listarTodos() {
   return livros;
 }
-function buscarLivroPorIndice(indice) {
-  return livros[indice];
+function buscarLivroPorId(id) {
+return livros.find((livro) => livro.id === Number(id));
 }
 function listarLivros(filtros) {
   let resultado = livros;
