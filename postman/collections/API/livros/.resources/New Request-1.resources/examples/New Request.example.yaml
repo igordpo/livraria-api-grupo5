@@ -1,0 +1,39 @@
+$kind: http-example
+request:
+  url: "{{baseURL}}/livros"
+  method: POST
+  body:
+    type: json
+    content: "{\r
+
+      \    \"titulo\": \"O hobbit\",\r
+
+      \    \"autor\": \"J.R.R. Tolkien\",\r
+
+      \    \"preco\": 1200.99,\r
+
+      \    \"estoque\": 10\r
+
+      }"
+response:
+  statusCode: 201
+  statusText: Created
+  headers:
+    x-powered-by: Express
+    content-type: application/json; charset=utf-8
+    content-length: "82"
+    etag: W/"52-EWVrq1O3DsAVgk+yhvpZsNGpMHw"
+    date: Wed, 21 Oct 2026 18:05:31 GMT
+    connection: keep-alive
+    keep-alive: timeout=5
+  body:
+    type: json
+    content: |-
+      {
+        "id": 3,
+        "titulo": "O hobbit",
+        "autor": "J.R.R. Tolkien",
+        "preco": 1200.99,
+        "estoque": 10
+      }
+order: 1000

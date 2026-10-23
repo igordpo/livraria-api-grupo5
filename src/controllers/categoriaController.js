@@ -1,66 +1,83 @@
 // CONTROLLER = o chef.
-// Aqui vai ficar a decisao do que fazer com cada pedido de Livro.
-// Recebe da rota, chama o service certo, devolve a resposta.
-// Implementacao chega no Bloco 3.
+// Recebe a requisição, chama o service e devolve a resposta.
 
 const categoriaService = require("../services/categoriaService");
 
 function listarCategoria(req, res) {
   const filtros = req.query;
-  const livrosFiltrados = categoriaService.listarCategorias(filtros);
-  return res.json(livrosFiltrados);
-  const livros = categoriaService.listarCategorias(filtros);
-  res.status(200).json(livros);
+  const categorias = categoriaService.listarCategorias(filtros);
+
+  return res.status(200).json(categorias);
 }
 
 function buscarPorIdCategoria(req, res) {
   const { id } = req.params;
-  const livro = categoriaService.buscarCategoriaPorId(id);
+  const categoria = categoriaService.buscarCategoriaPorId(id);
 
-  if (!livro) {
-
-    return res.status(404).json({ erro: "Livro não encontrado" });
+  if (!categoria) {
+    return res.status(404).json({
+      erro: "Categoria não encontrada",
+    });
   }
-  return res.json(livro);
+
+  return res.status(200).json(categoria);
 }
 
 function criarCategoria(req, res) {
+  const erro = categoriaService.validarCategoria(req.body, true);
+
+  if (erro) {
+    res.status(400).json({ erro: erro });
+    return;
+  }
+
   const dados = req.body;
-  const novoLivro = categoriaService.criarCategoria(dados);
-  return res.status(201).json(novoLivro);
+  const novaCategoria = categoriaService.criarCategoria(dados);
+
+  return res.status(201).json(novaCategoria);
 }
 
 function atualizarCompletoCategoria(req, res) {
   const { id } = req.params;
   const dados = req.body;
 
-  const livroAtualizado = categoriaService.atualizarCategoriaCompleto(id, dados);
+  const categoriaAtualizada = categoriaService.atualizarCategoria(id, dados);
 
-  if (!livroAtualizado) {
-    return res.status(404).json({ erro: "Livro não encontrado" });
+  if (!categoriaAtualizada) {
+    return res.status(404).json({
+      erro: "Categoria não encontrada",
+    });
   }
-  return res.json(livroAtualizado);
+
+  return res.status(200).json(categoriaAtualizada);
 }
 
 function atualizarParcialCategoria(req, res) {
   const { id } = req.params;
   const dados = req.body;
 
-  const livroAtualizado = categoriaService.atualizarCategoriaParcial(id, dados);
+  const categoriaAtualizada =
+    categoriaService.atualizarParcialCategoria(id, dados);
 
-  if (!livroAtualizado) {
-    return res.status(404).json({ erro: "Livro não encontrado" });
+  if (!categoriaAtualizada) {
+    return res.status(404).json({
+      erro: "Categoria não encontrada",
+    });
   }
-  return res.json(livroAtualizado);
+
+  return res.status(200).json(categoriaAtualizada);
 }
 
 function deletarCategoria(req, res) {
   const { id } = req.params;
-  const excluído = categoriaService.deletarCategoria(id);
+  const excluida = categoriaService.deletarCategoria(id);
 
-  if (!excluído) {
-    return res.status(404).json({ erro: "Livro não encontrado" });
+  if (!excluida) {
+    return res.status(404).json({
+      erro: "Categoria não encontrada",
+    });
   }
+
   return res.status(204).send();
 }
 

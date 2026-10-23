@@ -2,28 +2,28 @@
 // Aqui vai ficar a decisao do que fazer com cada pedido de Livro.
 // Recebe da rota, chama o service certo, devolve a resposta.
 // Implementacao chega no Bloco 3.
-
 const livroService = require("../services/livroService");
 
 function listar(req, res) {
-<<<<<<< HEAD
-const filtros = req.query;
-const livrosFiltrados = livroService.listarLivros(filtros);
-return res.json(livrosFiltrados);
-const livros = livroService.listarLivros(filtros);
-res.status(200).json(livros);
-=======
-  const filtros = req.query;
-  const livrosFiltrados = livroService.listarLivros(filtros);
-  return res.json(livrosFiltrados);
-  const livros = livroService.listarLivros(filtros);
-  res.status(200).json(livros);
->>>>>>> a77f91c04812d46332db16543c5a189cddb90abf
+    const filtros = req.query;
+    const livrosFiltrados = livroService.listarLivros(filtros);
+    return res.json(livrosFiltrados);
 }
 
 function buscarPorId(req, res) {
-  const { id } = req.params; 
-  const livro = livroService.buscarLivroPorId(id); 
+    const { id } = req.params;
+    const livro = livroService.buscarPorId(id);
+
+    if (!livro) {
+        return res.status(404).json({ erro: "Livro não encontrado" });
+    }
+    
+    return res.status(200).json(livro);
+}
+
+function buscarPorId(req, res) {
+  const { id } = req.params;
+  const livro = livroService.buscarLivroPorId(id);
 
   if (!livro) {
     return res.status(404).json({ erro: "Livro não encontrado" });
@@ -38,7 +38,7 @@ function criar(req, res) {
 }
 
 function atualizarCompleto(req, res) {
-  const { id } = req.params; 
+  const { id } = req.params;
   const dados = req.body;
 
   const livroAtualizado = livroService.atualizarLivroCompleto(id, dados);
@@ -50,7 +50,7 @@ function atualizarCompleto(req, res) {
 }
 
 function atualizarParcial(req, res) {
-  const { id } = req.params; 
+  const { id } = req.params;
   const dados = req.body;
 
   const livroAtualizado = livroService.atualizarLivroParcial(id, dados);
@@ -62,7 +62,7 @@ function atualizarParcial(req, res) {
 }
 
 function deletar(req, res) {
-  const { id } = req.params; 
+  const { id } = req.params;
   const excluído = livroService.deletarLivro(id);
 
   if (!excluído) {
@@ -78,4 +78,4 @@ module.exports = {
   atualizarCompleto,
   atualizarParcial,
   deletar,
-}
+};

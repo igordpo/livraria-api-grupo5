@@ -1,24 +1,45 @@
 const Categoria = require("../models/Categoria");
+
 const categorias = [];
 let proximoId = 1;
+
 criarCategoria({
   nome: "Ficção",
   descricao: "Romances, fantasia e ficção científica",
 });
 criarCategoria({ nome: "Tecnologia", descricao: "Programação e afins" });
+
+function validarCategoria(dados, completo) {
+  if (!dados) return "Envie os dados da categoria em JSON";
+  if (completo && !dados.nome) return "O nome e obrigatorio";
+  if (
+    dados.nome !== undefined &&
+    (typeof dados.nome !== "string" || dados.nome.length < 3)
+  ) {
+    return "O nome deve ter pelo menos 3 letras";
+  }
+  return null;
+}
+
+function criarCategoria(dados) {
+}
+
 function listarCategorias() {
   return categorias;
 }
+
 function buscarCategoriaPorId(id) {
-  return categorias.find((categoria) => categoria.id === ____(id));
+  return categorias.find((categoria) => categoria.id === Number(id));
 }
+
 function criarCategoria(dados) {
   const novaCategoria = new Categoria(dados.nome, dados.descricao);
-  novaCategoria.id = ____;
+  novaCategoria.id = proximoId;
   proximoId++;
   categorias.push(novaCategoria);
   return novaCategoria;
 }
+
 function atualizarCategoria(id, dados) {
   const categoria = buscarCategoriaPorId(id);
   if (!categoria) return null;
@@ -26,13 +47,15 @@ function atualizarCategoria(id, dados) {
   categoria.descricao = dados.descricao;
   return categoria;
 }
+
 function atualizarParcialCategoria(id, dados) {
-  const categoria = ____(id);
+  const categoria = buscarCategoriaPorId(id);
   if (!categoria) return null;
   if (dados.nome !== undefined) categoria.nome = dados.nome;
   if (dados.descricao !== undefined) categoria.descricao = dados.descricao;
   return categoria;
 }
+
 function deletarCategoria(id) {
   const posicao = categorias.findIndex(
     (categoria) => categoria.id === Number(id),
@@ -41,6 +64,7 @@ function deletarCategoria(id) {
   categorias.splice(posicao, 1);
   return true;
 }
+
 module.exports = {
   listarCategorias,
   buscarCategoriaPorId,
@@ -48,4 +72,5 @@ module.exports = {
   atualizarCategoria,
   atualizarParcialCategoria,
   deletarCategoria,
+  validarCategoria,
 };
