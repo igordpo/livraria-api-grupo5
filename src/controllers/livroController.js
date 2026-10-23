@@ -5,6 +5,7 @@
 const livroService = require("../services/livroService");
 
 function listar(req, res) {
+  throw new Error("Teste de erro 500"); 
     const filtros = req.query;
     const livrosFiltrados = livroService.listarLivros(filtros);
     return res.json(livrosFiltrados);
