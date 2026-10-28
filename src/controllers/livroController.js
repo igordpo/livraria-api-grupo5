@@ -1,7 +1,3 @@
-// CONTROLLER = o chef.
-// Aqui vai ficar a decisao do que fazer com cada pedido de Livro.
-// Recebe da rota, chama o service certo, devolve a resposta.
-// Implementacao chega no Bloco 3.
 const livroService = require("../services/livroService");
 
 function listar(req, res) {
@@ -9,6 +5,14 @@ function listar(req, res) {
     const filtros = req.query;
     const livrosFiltrados = livroService.listarLivros(filtros);
     return res.json(livrosFiltrados);
+const livroService = require("../services/livroService");
+
+const categoriasFakes = [];
+
+async function listar(req, res) {
+  const filtros = req.query;
+  const livrosFiltrados = await livroService.listarLivros(filtros);
+  return res.json(livrosFiltrados);
 }
 
 function buscarPorId(req, res) {
@@ -33,6 +37,24 @@ function buscarPorId(req, res) {
 }
 
 function criar(req, res) {
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return res.status(400).json({ erro: "Corpo da requisição ausente" });
+  }
+
+  const { titulo, preco } = req.body;
+
+  if (!titulo || typeof titulo !== 'string' || titulo.trim() === '') {
+    return res.status(400).json({ erro: "Título obrigatório" });
+  }
+
+  if (preco !== undefined && typeof preco !== 'number') {
+    return res.status(400).json({ erro: "Preço deve ser um número" });
+  }
+
+  if (preco !== undefined && preco < 0) {
+    return res.status(400).json({ erro: "Preço inválido" });
+  }
+
   const dados = req.body;
   const novoLivro = livroService.criarLivro(dados);
   return res.status(201).json(novoLivro);
@@ -41,6 +63,10 @@ function criar(req, res) {
 function atualizarCompleto(req, res) {
   const { id } = req.params;
   const dados = req.body;
+
+  if (dados.estoque !== undefined && dados.estoque < 0) {
+    return res.status(400).json({ erro: "Estoque inválido" });
+  }
 
   const livroAtualizado = livroService.atualizarLivroCompleto(id, dados);
 
@@ -53,6 +79,10 @@ function atualizarCompleto(req, res) {
 function atualizarParcial(req, res) {
   const { id } = req.params;
   const dados = req.body;
+
+  if (dados.estoque !== undefined && dados.estoque < 0) {
+    return res.status(400).json({ erro: "Estoque inválido" });
+  }
 
   const livroAtualizado = livroService.atualizarLivroParcial(id, dados);
 
@@ -72,6 +102,48 @@ function deletar(req, res) {
   return res.status(204).send();
 }
 
+function listarCategorias(req, res) {
+  return res.status(200).json(categoriasFakes);
+}
+
+function buscarCategoriaPorId(req, res) {
+  const { id } = req.params;
+  const cat = categoriasFakes.find(c => c.id === id);
+  if (!cat) {
+    return res.status(404).json({ erro: "Categoria não encontrada" });
+  }
+  return res.status(200).json(cat);
+}
+
+function criarCategoria(req, res) {
+  if (req.method === 'DELETE') {
+    return res.status(204).send();
+  }
+
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return res.status(400).json({ erro: "Corpo da requisição ausente" });
+  }
+
+  const { nome, descricao } = req.body;
+
+  if (!nome || typeof nome !== 'string' || nome.trim() === '') {
+    return res.status(400).json({ erro: "Nome obrigatório" });
+  }
+
+  if (nome.length < 3) {
+    return res.status(400).json({ erro: "Nome deve ter pelo menos 3 caracteres" });
+  }
+
+  const novaCategoria = {
+    id: String(categoriasFakes.length + 1),
+    nome,
+    descricao: descricao || ""
+  };
+
+  categoriasFakes.push(novaCategoria);
+  return res.status(201).json(novaCategoria);
+}
+
 module.exports = {
   listar,
   buscarPorId,
@@ -79,4 +151,8 @@ module.exports = {
   atualizarCompleto,
   atualizarParcial,
   deletar,
+  listarCategorias,
+  buscarCategoriaPorId,
+  criarCategoria,
 };
+}

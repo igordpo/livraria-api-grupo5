@@ -40,7 +40,8 @@ function listarLivros(filtros) {
   return livros.find((livro) => livro.id === Number(id));
 }
 
-function listarLivros(filtros) {
+async function listarLivros(filtros) {
+  const [linhas] = await db.query("SELECT * FROM livros");
   let resultado = livros;
 
   if (!filtros) return resultado;
