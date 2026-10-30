@@ -1,4 +1,5 @@
 const Livro = require("../models/Livro");
+const { db } = require("../config/db");
 
 const livros = [];
 let proximoId = 1;
@@ -7,8 +8,9 @@ function listarTodos() {
   return livros;
 }
 
-function buscarLivroPorId(id) {
-  return livros.find((livro) => livro.id === Number(id));
+async function buscarLivroPorId(id) {
+const [linhas] = await db.query("SELECT * FROM livros WHERE id = ?", [id]);
+return linhas[0];
 }
 
 function listarLivros(filtros) {

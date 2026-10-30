@@ -1,6 +1,4 @@
--- Script do banco da Livraria
--- Rode este arquivo inteiro no MySQL Workbench (raio ⚡).
--- Ele apaga e recria tudo: pode rodar de novo sempre que quiser começar do zero.
+
 
 DROP DATABASE IF EXISTS livraria;
 CREATE DATABASE livraria;
