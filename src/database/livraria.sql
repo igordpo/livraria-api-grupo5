@@ -1,5 +1,3 @@
-
-
 DROP DATABASE IF EXISTS livraria;
 CREATE DATABASE livraria;
 USE livraria;

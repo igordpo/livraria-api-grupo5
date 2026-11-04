@@ -1,112 +1,80 @@
-const Livro = require("../models/Livro");
 const { db } = require("../config/db");
 
-const livros = [];
-let proximoId = 1;
-
-function listarTodos() {
-  return livros;
+async function listarTodos() {
+  const [linhas] = await db.query("SELECT * FROM livros");
+  return linhas;
 }
 
 async function buscarLivroPorId(id) {
-const [linhas] = await db.query("SELECT * FROM livros WHERE id = ?", [id]);
-return linhas[0];
+  const [linhas] = await db.query("SELECT * FROM livros WHERE id = ?", [id]);
+  return linhas[0];
 }
 
-function listarLivros(filtros) {
+async function listarLivros(filtros) {
+  // Busca todos os livros diretamente do banco de dados
+  const [livros] = await db.query("SELECT * FROM livros");
   let resultado = livros;
 
   if (!filtros) return resultado;
 
   if (filtros.autor) {
     resultado = resultado.filter((livro) =>
-      livro.autor.toLowerCase().includes(filtros.autor.toLowerCase())
+      livro.autor.toLowerCase().includes(filtros.autor.toLowerCase()),
     );
   }
   if (filtros.precoMax) {
     resultado = resultado.filter(
-      (livro) => livro.preco <= Number(filtros.precoMax)
+      (livro) => livro.preco <= Number(filtros.precoMax),
     );
   }
   if (filtros.titulo) {
     resultado = resultado.filter((livro) =>
-      livro.titulo.toLowerCase().includes(filtros.titulo.toLowerCase())
+      livro.titulo.toLowerCase().includes(filtros.titulo.toLowerCase()),
     );
   }
   return resultado;
 }
 
-function criarLivro(dados) {
-  const novoLivro = new Livro(
-    dados.titulo,
-    dados.autor,
-    dados.preco,
-    dados.estoque
+async function criarLivro(dados) {
+  const [resultado] = await db.query(
+    "INSERT INTO livros (titulo, autor, preco, estoque) VALUES (?, ?, ?, ?)",
+    [dados.titulo, dados.autor, dados.preco, dados.estoque],
   );
-  novoLivro.id = proximoId;
-  proximoId++;
-  livros.push(novoLivro);
-  return novoLivro;
+  return await buscarLivroPorId(resultado.insertId);
 }
 
-function atualizarLivroCompleto(id, dados) {
-  const livro = buscarLivroPorId(id);
-  if (!livro) return null;
-
-  livro.titulo = dados.titulo;
-  livro.autor = dados.autor;
-  livro.preco = dados.preco;
-  livro.estoque = dados.estoque;
-  livro.categoria = dados.categoria;
-
-  return livro;
+async function atualizarLivro(id, dados) {
+  const [resultado] = await db.query(
+    "UPDATE livros SET titulo = ?, autor = ?, preco = ?, estoque = ? WHERE id = ?",
+    [dados.titulo, dados.autor, dados.preco, dados.estoque, id],
+  );
+  if (resultado.affectedRows === 0) return null;
+  return await buscarLivroPorId(id);
 }
 
-function atualizarLivroParcial(id, dados) {
-  const livro = buscarLivroPorId(id);
+async function atualizarParcialLivro(id, dados) {
+  const livro = await buscarLivroPorId(id);
   if (!livro) return null;
 
   if (dados.titulo !== undefined) livro.titulo = dados.titulo;
   if (dados.autor !== undefined) livro.autor = dados.autor;
   if (dados.preco !== undefined) livro.preco = dados.preco;
   if (dados.estoque !== undefined) livro.estoque = dados.estoque;
-  if (dados.categoria !== undefined) livro.categoria = dados.categoria;
 
-  return livro;
+  return await atualizarLivro(id, livro);
 }
 
-function deletarLivro(id) {
-  const posicao = livros.findIndex((livro) => livro.id === Number(id));
-  if (posicao === -1) return false;
-  livros.splice(posicao, 1);
-  return true;
+async function deletarLivro(id) {
+  const [resultado] = await db.query("DELETE FROM livros WHERE id = ?", [id]);
+  return resultado.affectedRows > 0;
 }
-
-criarLivro({
-  titulo: "Clean Code",
-  autor: "Robert C. Martin",
-  preco: 89.9,
-  estoque: 12,
-});
-criarLivro({
-  titulo: "Eloquent JavaScript",
-  autor: "Marijn Haverbeke",
-  preco: 45.0,
-  estoque: 20,
-});
-criarLivro({
-  titulo: "O Hobbit",
-  autor: "J.R.R. Tolkien",
-  preco: 39.90,
-  estoque: 8,
-});
 
 module.exports = {
   listarTodos,
   listarLivros,
   buscarLivroPorId,
   criarLivro,
-  atualizarLivroCompleto,
-  atualizarLivroParcial,
+  atualizarLivro,
+  atualizarParcialLivro,
   deletarLivro,
 };

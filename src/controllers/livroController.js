@@ -23,7 +23,7 @@ async function buscarPorId(req, res) {
 }
 
 
-function criar(req, res) {
+async function criar(req, res) {
   if (!req.body || Object.keys(req.body).length === 0) {
     return res.status(400).json({ erro: "Corpo da requisição ausente" });
   }
@@ -48,12 +48,12 @@ function criar(req, res) {
 
 
   const dados = req.body;
-  const novoLivro = livroService.criarLivro(dados);
+  const novoLivro = await livroService.criarLivro(dados);
   return res.status(201).json(novoLivro);
 }
 
 
-function atualizarCompleto(req, res) {
+async function atualizarCompleto(req, res) {
   const { id } = req.params;
   const dados = req.body;
 
@@ -63,7 +63,7 @@ function atualizarCompleto(req, res) {
   }
 
 
-  const livroAtualizado = livroService.atualizarLivroCompleto(id, dados);
+  const livroAtualizado = await livroService.atualizarLivro(id, dados);
 
 
   if (!livroAtualizado) {
@@ -73,7 +73,7 @@ function atualizarCompleto(req, res) {
 }
 
 
-function atualizarParcial(req, res) {
+async function atualizarParcial(req, res) {
   const { id } = req.params;
   const dados = req.body;
 
@@ -83,7 +83,7 @@ function atualizarParcial(req, res) {
   }
 
 
-  const livroAtualizado = livroService.atualizarLivroParcial(id, dados);
+  const livroAtualizado = await livroService.atualizarParcialLivro(id, dados);
 
 
   if (!livroAtualizado) {
@@ -93,9 +93,9 @@ function atualizarParcial(req, res) {
 }
 
 
-function deletar(req, res) {
+async function deletar(req, res) {
   const { id } = req.params;
-  const excluído = livroService.deletarLivro(id);
+  const excluído = await livroService.deletarLivro(id);
 
 
   if (!excluído) {
