@@ -6,14 +6,18 @@ async function listarTodos() {
 }
 
 async function buscarLivroPorId(id) {
-  const [linhas] = await db.query("SELECT * FROM livros WHERE id = ?", [id]);
-  return linhas[0];
+const [linhas] = await db.query(
+    "SELECT livros.*, categorias.nome AS categoria FROM livros LEFT JOIN categorias ON livros.categoria_id = categorias.id WHERE livros.id = ?",
+    [id],
+  );  return linhas[0];
 }
 
 async function listarLivros(filtros) {
   // Busca todos os livros diretamente do banco de dados
-  const [livros] = await db.query("SELECT * FROM livros");
-  let resultado = livros;
+  const [linhas] = await db.query(
+    "SELECT livros.*, categorias.nome AS categoria FROM livros LEFT JOIN categorias ON livros.categoria_id = categorias.id",
+  );
+  let resultado = linhas;
 
   if (!filtros) return resultado;
 
@@ -35,18 +39,53 @@ async function listarLivros(filtros) {
   return resultado;
 }
 
+function validarLivro(dados, completo) {
+  if (!dados) return "Envie os dados do livro em JSON";
+
+  if (completo && !dados.titulo) return "O titulo e obrigatorio";
+  if (completo && !dados.autor) return "O autor e obrigatorio";
+  if (completo && dados.preco === undefined) return "O preco e obrigatorio";
+  if (completo && dados.estoque === undefined) return "O estoque e obrigatorio";
+
+  if (
+    dados.preco !== undefined &&
+    (typeof dados.preco !== "number" || dados.preco < 0)
+  ) {
+    return "O preco deve ser um numero maior ou igual a zero";
+  }
+  if (
+    dados.estoque !== undefined &&
+    (typeof dados.estoque !== "number" || dados.estoque < 0)
+  ) {
+    return "O estoque deve ser um numero maior ou igual a zero";
+  }
+
+  if (
+    dados.categoria_id !== undefined &&
+    typeof dados.categoria_id !== "number"
+  ) {
+    return "O categoria_id deve ser um numero";
+  }
+
+  if (dados.categoria_id !== undefined && typeof dados.categoria_id !== "number") {
+    return "O categoria_id deve ser um numero";
+  }
+
+  return null;
+}
+
 async function criarLivro(dados) {
   const [resultado] = await db.query(
-    "INSERT INTO livros (titulo, autor, preco, estoque) VALUES (?, ?, ?, ?)",
-    [dados.titulo, dados.autor, dados.preco, dados.estoque],
+    "INSERT INTO livros (titulo, autor, preco, estoque, categoria_id) VALUES (?, ?, ?, ?, ?)",
+    [dados.titulo, dados.autor, dados.preco, dados.estoque, dados.categoria_id],
   );
   return await buscarLivroPorId(resultado.insertId);
 }
 
 async function atualizarLivro(id, dados) {
   const [resultado] = await db.query(
-    "UPDATE livros SET titulo = ?, autor = ?, preco = ?, estoque = ? WHERE id = ?",
-    [dados.titulo, dados.autor, dados.preco, dados.estoque, id],
+    "UPDATE livros SET titulo = ?, autor = ?, preco = ?, estoque = ?, categoria_id = ? WHERE id = ?",
+    [dados.titulo, dados.autor, dados.preco, dados.estoque, dados.categoria_id, id],
   );
   if (resultado.affectedRows === 0) return null;
   return await buscarLivroPorId(id);
@@ -60,6 +99,7 @@ async function atualizarParcialLivro(id, dados) {
   if (dados.autor !== undefined) livro.autor = dados.autor;
   if (dados.preco !== undefined) livro.preco = dados.preco;
   if (dados.estoque !== undefined) livro.estoque = dados.estoque;
+  if (dados.categoria_id !== undefined) livro.categoria_id = dados.categoria_id;
 
   return await atualizarLivro(id, livro);
 }

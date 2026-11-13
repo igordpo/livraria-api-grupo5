@@ -3,16 +3,16 @@
 
 const categoriaService = require("../services/categoriaService");
 
-function listarCategoria(req, res) {
-  const filtros = req.query;
-  const categorias = categoriaService.listarCategorias(filtros);
+async function listarCategoria(req, res) {
+   const filtros = req.query;
+  const categorias = await categoriaService.listarCategorias(filtros);
 
   return res.status(200).json(categorias);
 }
 
-function buscarPorIdCategoria(req, res) {
+async function buscarPorIdCategoria(req, res) {
   const { id } = req.params;
-  const categoria = categoriaService.buscarCategoriaPorId(id);
+  const categoria = await categoriaService.buscarCategoriaPorId(id);
 
   if (!categoria) {
     return res.status(404).json({
@@ -23,8 +23,8 @@ function buscarPorIdCategoria(req, res) {
   return res.status(200).json(categoria);
 }
 
-function criarCategoria(req, res) {
-  const erro = categoriaService.validarCategoria(req.body, true);
+async function criarCategoria(req, res) {
+  const erro = await categoriaService.validarCategoria(req.body, true);
 
   if (erro) {
     res.status(400).json({ erro: erro });
@@ -37,11 +37,11 @@ function criarCategoria(req, res) {
   return res.status(201).json(novaCategoria);
 }
 
-function atualizarCompletoCategoria(req, res) {
+async function atualizarCompletoCategoria(req, res) {
   const { id } = req.params;
   const dados = req.body;
 
-  const categoriaAtualizada = categoriaService.atualizarCategoria(id, dados);
+  const categoriaAtualizada = await categoriaService.atualizarCategoria(id, dados);
 
   if (!categoriaAtualizada) {
     return res.status(404).json({
@@ -52,12 +52,12 @@ function atualizarCompletoCategoria(req, res) {
   return res.status(200).json(categoriaAtualizada);
 }
 
-function atualizarParcialCategoria(req, res) {
+async function atualizarParcialCategoria(req, res) {
   const { id } = req.params;
   const dados = req.body;
 
   const categoriaAtualizada =
-    categoriaService.atualizarParcialCategoria(id, dados);
+    await categoriaService.atualizarParcialCategoria(id, dados);
 
   if (!categoriaAtualizada) {
     return res.status(404).json({
@@ -68,9 +68,9 @@ function atualizarParcialCategoria(req, res) {
   return res.status(200).json(categoriaAtualizada);
 }
 
-function deletarCategoria(req, res) {
+async function deletarCategoria(req, res) {
   const { id } = req.params;
-  const excluida = categoriaService.deletarCategoria(id);
+  const excluida = await categoriaService.deletarCategoria(id);
 
   if (!excluida) {
     return res.status(404).json({
